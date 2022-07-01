@@ -1,25 +1,58 @@
-import logo from './logo.svg';
+import { Component } from 'react';
 import './App.css';
 
-function App() {
-  return (
+class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      cats:[],
+      search: '',
+    }
+  }
+  componentDidMount() {
+    fetch('https://jsonplaceholder.typicode.com/users')
+    .then(resp => resp.json())
+    .then((users) => this.setState(() => {
+      return {cats:users};
+    },
+    () => {
+      console.log(this.state.cats)
+    }));
+  }
+  onSearchChange = (event) => {
+    const search = event.target.value.toLocaleLowerCase();
+    this.setState(() => {
+      return { search };
+    },
+    () => {
+      console.log(search)
+    })
+  }
+
+  render() {
+
+    const filtercats = this.state.cats.filter((cat) => {
+      return cat.name.toLocaleLowerCase().includes(this.state.search)
+    })
+
+    return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     <input 
+      className='search' 
+      type="search" 
+      placeholder="search cats"
+      onChange={this.onSearchChange}
+     />
+      {filtercats.map((cat) => {
+        return (
+          <div key={cat.id}>
+            <h1>{cat.name}</h1>
+          </div>
+        )
+      })}
     </div>
   );
+  }
 }
 
 export default App;
