@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import SearchBox from './components/Search-Box/search-box.component'
+import CardList from './components/Card-List/card-list.component';
 import './App.css';
 
 class App extends Component {
@@ -23,35 +25,26 @@ class App extends Component {
     const search = event.target.value.toLocaleLowerCase();
     this.setState(() => {
       return { search };
-    },
-    () => {
-      console.log(search)
     })
   }
 
   render() {
-
-    const filtercats = this.state.cats.filter((cat) => {
-      return cat.name.toLocaleLowerCase().includes(this.state.search)
+    const { cats, search } = this.state;
+    const { onSearchChange } = this;
+    const filtercats = cats.filter((cat) => {
+      return cat.name.toLocaleLowerCase().includes(search)
     })
 
     return (
-    <div className="App">
-     <input 
-      className='search' 
-      type="search" 
-      placeholder="search cats"
-      onChange={this.onSearchChange}
-     />
-      {filtercats.map((cat) => {
-        return (
-          <div key={cat.id}>
-            <h1>{cat.name}</h1>
-          </div>
-        )
-      })}
-    </div>
-  );
+      <div>
+        <SearchBox 
+          onChange={onSearchChange}
+          className='cats-search-box'
+          placeholder='Search Cats'
+        />
+        <CardList cats={filtercats}/>
+      </div>
+    );
   }
 }
 
